@@ -1,0 +1,22 @@
+{
+  "name": "carbon_it",
+  "version": "1.0.0",
+  "description": "\"The treasure hunt\" carbon it exercice",
+  "main": "index.js",
+  "scripts": {
+    "test": "mocha"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/fabriceLatri/carbon_it.git"
+  },
+  "author": "Fabrice LATRI",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/fabriceLatri/carbon_it/issues"
+  },
+  "homepage": "https://github.com/fabriceLatri/carbon_it#readme",
+  "dependencies": {
+    "mocha": "^9.2.0"
+  }
+}
