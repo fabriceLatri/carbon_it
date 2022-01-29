@@ -33,7 +33,60 @@ const read = async (filename) => {
 const parseData = (data) => {
   let arrayFile = data.split('\n');
   let arrayFileTrim = arrayFile.map((element) => element.trim());
-  return arrayFileTrim.filter((element) => element[0] !== '#');
+  return arrayFileTrim
+    .filter((element) => element[0] !== '#')
+    .reduce(
+      (a, v) => {
+        let regexp = null;
+        switch (v[0]) {
+          case 'C':
+            regexp = new RegExp('C - [0-9]+ - [0-9]+');
+            if (v.match(regexp)) {
+              return { ...a, ...a.C.push({ v }) };
+            } else {
+              return { ...a };
+            }
+
+          case 'M':
+            regexp = new RegExp('M - [0-9]+ - [0-9]+');
+            if (v.match(regexp)) {
+              return { ...a, ...a.M.push({ v }) };
+            } else {
+              return { ...a };
+            }
+
+          case 'T':
+            regexp = new RegExp('T - [0-9]+ - [0-9]+ - [0-9]+');
+            if (v.match(regexp)) {
+              return { ...a, ...a.T.push({ v }) };
+            } else {
+              return { ...a };
+            }
+
+          case 'A':
+            regexp = new RegExp(
+              'A - [A-Za-z]+ - [0-9]+ - [0-9]+ - [SNOE] - [AGD]+'
+            );
+            if (v.match(regexp)) {
+              return { ...a, ...a.A.push({ v }) };
+            } else {
+              return { ...a };
+            }
+
+          default:
+            return { ...a };
+        }
+      },
+      { A: [], C: [], M: [], T: [] }
+    );
+};
+
+const dispatchData = (data) => {
+  data.reduce((acc, current) => {
+    switch (current[0]) {
+      case 'C':
+    }
+  }, []);
 };
 
 module.exports = {

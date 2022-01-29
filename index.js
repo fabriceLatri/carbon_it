@@ -16,6 +16,7 @@ checkFile
     return checkFile.read(filename);
   })
   .then((data) => {
+    // 2. Lire le fichier et mettre les instructions non commentées dans un objet
     return checkFile.parseData(data);
   })
   .then((parsedData) => {
@@ -25,8 +26,6 @@ checkFile
     console.error(error);
     process.exitCode = 1;
   });
-
-// 2. Lire le fichier et mettre les instructions non commentées dans un tableau
 
 // 3. Construire la map
 
