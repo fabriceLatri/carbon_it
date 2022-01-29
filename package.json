@@ -18,5 +18,8 @@
   "homepage": "https://github.com/fabriceLatri/carbon_it#readme",
   "dependencies": {
     "mocha": "^9.2.0"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.15"
   }
 }

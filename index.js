@@ -1,34 +1,30 @@
+const path = require('path');
+const fs = require('fs');
+
 const checkFile = require('./utils/checkFile');
 
 // Check arguments of the program
 const myArgs = process.argv.slice(2);
 
-// Authorize only one argument (filename)
-// switch (myArgs.length) {
-//   case 0:
-//     // No argument. Use example.txt filename
-//     checkFile.test();
-//     const filePath = path.resolve(__dirname, 'entryFiles', 'example.txt');
-//     fs.readFile(filePath, 'utf-8', function (err, data) {
-//       if (err) {
-//         console.error(err);
-//       }
-//       console.log(data);
-//     });
-
-//   case 1:
-// One arggument passed!! Check if the file exists in entryFiles folder
-
-// const filePath = path.resolve(__dirname, 'entryFiles');
-// fs.readFile(filePath, 'utf-8', function (err, data) {
-//   if (err) {
-//     console.error(err);
-//   }
-//   console.log(data);
-// });
-// }
-
 // 1. Vérifier si le fichier est passé en argument et existe dans le dossier entryFiles
+const filename = myArgs[0] ?? 'example.txt';
+checkFile
+  .exists(filename)
+  .then((fileExists) => {
+    if (!fileExists) throw 'File not found';
+
+    return checkFile.read(filename);
+  })
+  .then((data) => {
+    return checkFile.parseData(data);
+  })
+  .then((parsedData) => {
+    console.log(parsedData);
+  })
+  .catch((error) => {
+    console.error(error);
+    process.exitCode = 1;
+  });
 
 // 2. Lire le fichier et mettre les instructions non commentées dans un tableau
 
@@ -45,5 +41,3 @@ const myArgs = process.argv.slice(2);
 // 8. Récupérer les trésors (counter)
 
 // 9. Indiquer les réponses dans le fichier de sortie output.txt
-
-console.log('test asynchrone');
