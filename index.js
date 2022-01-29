@@ -1,7 +1,5 @@
-const path = require('path');
-const fs = require('fs');
-
 const checkFile = require('./utils/checkFile');
+const mapGrid = require('./utils/mapGrid');
 
 // Check arguments of the program
 const myArgs = process.argv.slice(2);
@@ -20,7 +18,7 @@ checkFile
     return checkFile.parseData(data);
   })
   .then((parsedData) => {
-    console.log(parsedData);
+    console.log(mapGrid.initMap(parsedData));
   })
   .catch((error) => {
     console.error(error);

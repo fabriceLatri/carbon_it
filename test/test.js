@@ -1,5 +1,6 @@
 const assert = require('assert');
 const checkFile = require('../utils/checkFile.js');
+const mapGrid = require('../utils/mapGrid.js');
 
 describe('checkFile TU', function () {
   describe('#exists()', function () {
@@ -32,6 +33,23 @@ describe('checkfile TU', function () {
           T: [{ v: 'T - 0 - 3 - 2' }, { v: 'T - 1 - 3 - 3' }],
         },
         checkFile.parseData(testData)
+      );
+    });
+  });
+});
+
+describe('mapGrid TU', function () {
+  describe('#initMap()', function () {
+    it('should return a map from dataParsed', function () {
+      const dataParsed = {
+        A: [{ v: 'A - Lara - 1 - 1 - S - AADADAGGA' }],
+        C: [{ v: 'C - 3 - 4' }],
+        M: [{ v: 'M - 1 - 0' }, { v: 'M - 2 - 1' }],
+        T: [{ v: 'T - 0 - 3 - 2' }, { v: 'T - 1 - 3 - 3' }],
+      };
+      assert.equal(
+        '.\t.\t.\n.\t.\t.\n.\t.\t.\n.\t.\t.',
+        mapGrid.initMap(dataParsed)
       );
     });
   });
