@@ -1,5 +1,5 @@
 const checkFile = require('./utils/checkFile');
-const mapGrid = require('./utils/mapGrid');
+const Map = require('./utils/MapGrid');
 
 // Check arguments of the program
 const myArgs = process.argv.slice(2);
@@ -18,22 +18,24 @@ checkFile
     return checkFile.parseData(data);
   })
   .then((parsedData) => {
-    console.log(mapGrid.initMap(parsedData));
+    // 3. Construire la map
+    const mapClass = new Map(parsedData);
+    mapClass.initMap();
+    // 4. Mettre les montagnes dans la carte
+    mapClass.makeMoutain();
+    // 5. Mettre les trésors dans la carte
+    mapClass.makeTreasure();
+    // 6. Mettre les avanturiers sur la carte
+    mapClass.makeAdventurer();
+    // 7. Créer les mouvements Avance, Gauche, Droite
+    mapClass.search();
+
+    console.log(mapClass.renderMap());
   })
   .catch((error) => {
     console.error(error);
     process.exitCode = 1;
   });
-
-// 3. Construire la map
-
-// 4. Mettre les montagnes dans la carte
-
-// 5. Mettre les trésors dans la carte
-
-// 6. Mettre les avanturiers sur la carte
-
-// 7. Créer les mouvements Avance, Gauche, Droite
 
 // 8. Récupérer les trésors (counter)
 
