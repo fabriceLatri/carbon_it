@@ -66,13 +66,13 @@ class Map {
 
           if (mountainsCount > 0) {
             output += `M\t`;
+          } else if (adventurersArr.length === 1) {
+            output += `A(${adventurersArr[0].name})\t`;
           } else if (treasuresArr.length > 0) {
             const treasuresCount = treasuresArr.reduce((acc, current) => {
               return acc + current.count;
             }, 0);
             output += `T(${treasuresCount})\t`;
-          } else if (adventurersArr.length === 1) {
-            output += `A(${adventurersArr[0].name})\t`;
           }
         }
         output += '\t';
@@ -98,7 +98,8 @@ class Map {
   };
 
   makeAdventurer = () => {
-    this.adventurersData.forEach((adventurerData) => {
+    this.adventurersData.forEach((adventurerData, index) => {
+      adventurerData.id = index;
       const adventurer = new Adventurer(adventurerData);
       this.insertItem(adventurer);
     });
@@ -106,7 +107,15 @@ class Map {
 
   insertItem = (item) => {
     if (this.existsMapCoordinates(item) && this.isAvailable(item)) {
-      [...this.grid, this.grid[item.y][item.x].push(item)];
+      // Check if a treasure with the same coordinates exists
+      const treasuresItems = this.grid[item.y][item.x].filter(
+        (element) => element instanceof Treasure
+      );
+      if (item instanceof Treasure && treasuresItems.length > 0) {
+        treasuresItems[0].count += item.count;
+      } else {
+        [...this.grid, this.grid[item.y][item.x].push(item)];
+      }
     }
   };
 
@@ -126,16 +135,62 @@ class Map {
 
   search = () => {
     const adventurers = this.getAdvendurersMap();
-    adventurers.forEach((adventurer) => {
-      // Récupérer les nouvelles coordonnées  ou direction de l'aventurier
-      const newCoordinates = adventurer.newCoordinates(this.grid);
+    const maxSequence = adventurers.reduce((acc, current) => {
+      return current.countSequence > acc ? current.countSequence : acc;
+    }, 0);
 
-      // si la séquence était A, vérifier si la nouvelle coordonnées est valide
+    for (let i = 0; i < maxSequence; i++) {
+      adventurers.forEach((adventurer) => {
+        if (i < adventurer.countSequence) {
+          // Récupérer les nouvelles coordonnées  ou direction de l'aventurier
+          const newCoordinates = adventurer.newCoordinates();
 
-      // Si valide, sauvegarder les nouvelles coordonnées
+          const newCoordinatesObj = {
+            x: newCoordinates[0],
+            y: newCoordinates[1],
+          };
 
-      // Décrémenter la valeur de count de l'aventurier
-    });
+          if (
+            adventurer.getLetterOfSequence(i) === 'A' &&
+            this.existsMapCoordinates(newCoordinatesObj) &&
+            this.isAvailable(newCoordinatesObj)
+          ) {
+            // Save the new coordinates of the adventurer on the map
+            this.moveAdventurerOnTheMap(adventurer, newCoordinates);
+          }
+        }
+      });
+    }
+  };
+
+  moveAdventurerOnTheMap = (adventurer, newCoordinates) => {
+    let newGrid = this.grid.map((yAxis) =>
+      yAxis.map((xAxis) =>
+        xAxis.filter((item) => {
+          return item.id !== adventurer.id;
+        })
+      )
+    );
+
+    [adventurer.x, adventurer.y] = newCoordinates;
+
+    newGrid[adventurer.y][adventurer.x].push(adventurer);
+
+    this.grid = newGrid;
+  };
+
+  findTreasure = (adventurer) => {
+    const itemsTreasure = this.grid[adventurer.y][adventurer.x].filter(
+      (item) => item instanceof Treasure
+    );
+
+    if (itemsTreasure.length > 0) {
+      // We found a treasure
+      if (itemsTreasure[0].count > 0) {
+        itemsTreasure[0].count -= 1;
+        adventurer.countTreasure += 1;
+      }
+    }
   };
 
   getOutputGrid = () => {

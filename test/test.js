@@ -1,5 +1,6 @@
 const assert = require('assert');
 const Adventurer = require('../utils/Adventurer');
+const Treasure = require('../utils/Treasure');
 const checkFile = require('../utils/checkFile');
 const Map = require('../utils/MapGrid');
 
@@ -92,6 +93,27 @@ describe('mapGrid TU', function () {
       assert.equal(
         grid.renderMap(),
         '.\t\tM\t\t.\t\t\n.\t\t.\t\tM\t\t\n.\t\t.\t\t.\t\t\nT(2)\t\tT(3)\t\t.\t\t\n'
+      );
+    });
+  });
+});
+
+describe('mapGrid TU', function () {
+  describe('#makeTreasure()', function () {
+    it('should implement treasures in the map - 2 treasures with same coordinates merge', function () {
+      const dataParsed = {
+        A: [{ v: 'A - Lara - 1 - 1 - S - AADADAGGA' }],
+        C: [{ v: 'C - 3 - 4' }],
+        M: [{ v: 'M - 1 - 0' }, { v: 'M - 2 - 1' }],
+        T: [{ v: 'T - 0 - 3 - 2' }, { v: 'T - 0 - 3 - 3' }],
+      };
+      const grid = new Map(dataParsed);
+      grid.initMap();
+      grid.makeMoutain();
+      grid.makeTreasure();
+      assert.equal(
+        grid.renderMap(),
+        '.\t\tM\t\t.\t\t\n.\t\t.\t\tM\t\t\n.\t\t.\t\t.\t\t\nT(5)\t\t.\t\t.\t\t\n'
       );
     });
   });
@@ -222,24 +244,135 @@ describe('Adventurer TU', function () {
   });
 });
 
-// describe('mapGrid TU', function () {
-//   describe('#isEmptyAdventurer()', function () {
-//     it('should return true if the tile of the map is valid to implement adventurer, false else', function () {
-//       const dataParsed = {
-//         A: [{ v: 'A - Lara - 1 - 1 - S - AADADAGGA' }],
-//         C: [{ v: 'C - 3 - 4' }],
-//         M: [{ v: 'M - 1 - 0' }, { v: 'M - 2 - 1' }],
-//         T: [{ v: 'T - 0 - 3 - 2' }, { v: 'T - 1 - 3 - 3' }],
-//       };
-//       const grid = new Map(dataParsed);
-//       grid.initMap();
-//       grid.makeMoutain();
-//       grid.makeTreasure();
-//       grid.makeAdventurer();
-//       assert.equal(
-//         grid.renderMap(),
-//         '.\t\tM\t\t.\t\t\n.\t\tA(Lara)\t\tM\t\t\n.\t\t.\t\t.\t\t\nT(2)\t\tT(3)\t\t.\t\t\n'
-//       );
-//     });
-//   });
-// });
+describe('Adventurer TU', function () {
+  describe('#getLetterOfSequence()', function () {
+    it('should return the letter of the sequence', function () {
+      const adventurer = new Adventurer({
+        v: 'A - Lara - 1 - 1 - S - DADADAGGA',
+      });
+      assert.equal(adventurer.getLetterOfSequence(0), 'D');
+      assert.equal(adventurer.getLetterOfSequence(1), 'A');
+      assert.equal(adventurer.getLetterOfSequence(2), 'D');
+      assert.equal(adventurer.getLetterOfSequence(3), 'A');
+      assert.equal(adventurer.getLetterOfSequence(4), 'D');
+      assert.equal(adventurer.getLetterOfSequence(5), 'A');
+      assert.equal(adventurer.getLetterOfSequence(6), 'G');
+      assert.equal(adventurer.getLetterOfSequence(7), 'G');
+      assert.equal(adventurer.getLetterOfSequence(8), 'A');
+      assert.equal(adventurer.getLetterOfSequence(12), null);
+    });
+  });
+});
+
+describe('mapGrid TU', function () {
+  describe('#moveAdventurerOnTheMap()', function () {
+    it('move the adventurer on the map', function () {
+      const dataParsed = {
+        A: [{ v: 'A - Lara - 1 - 1 - S - AADADAGGA' }],
+        C: [{ v: 'C - 3 - 4' }],
+        M: [{ v: 'M - 1 - 0' }, { v: 'M - 2 - 1' }],
+        T: [{ v: 'T - 0 - 3 - 2' }, { v: 'T - 1 - 3 - 3' }],
+      };
+      const grid = new Map(dataParsed);
+      grid.initMap();
+      grid.makeMoutain();
+      grid.makeTreasure();
+      grid.makeAdventurer();
+      const adventurer = new Adventurer(grid.adventurersData[0]);
+      const newCoordinates = adventurer.newCoordinates();
+      grid.moveAdventurerOnTheMap(adventurer, newCoordinates);
+      assert.equal(
+        grid.renderMap(),
+        '.\t\tM\t\t.\t\t\n.\t\t.\t\tM\t\t\n.\t\tA(Lara)\t\t.\t\t\nT(2)\t\tT(3)\t\t.\t\t\n'
+      );
+    });
+  });
+});
+
+describe('mapGrid TU', function () {
+  describe('#moveAdventurerOnTheMap()', function () {
+    it("move the adventurer on the map. The adventurer can't walk on the mountain", function () {
+      const dataParsed = {
+        A: [{ v: 'A - Lara - 1 - 1 - N - AADADAGGA' }],
+        C: [{ v: 'C - 3 - 4' }],
+        M: [{ v: 'M - 1 - 0' }, { v: 'M - 2 - 1' }],
+        T: [{ v: 'T - 0 - 3 - 2' }, { v: 'T - 1 - 3 - 3' }],
+      };
+      const grid = new Map(dataParsed);
+      grid.initMap();
+      grid.makeMoutain();
+      grid.makeTreasure();
+      grid.makeAdventurer();
+      const adventurer = new Adventurer(grid.adventurersData[0]);
+      const newCoordinates = adventurer.newCoordinates();
+      const newCoordinatesObj = {
+        x: newCoordinates[0],
+        y: newCoordinates[1],
+      };
+      assert.equal(true, grid.existsMapCoordinates(newCoordinatesObj));
+      assert.equal(false, grid.isAvailable(newCoordinatesObj));
+    });
+  });
+});
+
+describe('mapGrid TU', function () {
+  describe('#moveAdventurerOnTheMap()', function () {
+    it("move the adventurer on the map. The adventurer can't walk on the other adventurer", function () {
+      const dataParsed = {
+        A: [
+          { v: 'A - Lara - 1 - 1 - N - AADADAGGA' },
+          { v: 'A - Lara2 - 1 - 0 - O - DADADAGGA' },
+        ],
+        C: [{ v: 'C - 3 - 4' }],
+        M: [{ v: 'M - 2 - 0' }, { v: 'M - 2 - 1' }],
+        T: [{ v: 'T - 0 - 3 - 2' }, { v: 'T - 1 - 3 - 3' }],
+      };
+      const grid = new Map(dataParsed);
+      grid.initMap();
+      grid.makeMoutain();
+      grid.makeTreasure();
+      grid.makeAdventurer();
+      const adventurer = new Adventurer(grid.adventurersData[0]);
+      const newCoordinates = adventurer.newCoordinates();
+      const newCoordinatesObj = {
+        x: newCoordinates[0],
+        y: newCoordinates[1],
+      };
+      assert.equal(true, grid.existsMapCoordinates(newCoordinatesObj));
+      assert.equal(false, grid.isAvailable(newCoordinatesObj));
+      assert.equal(
+        grid.renderMap(),
+        '.\t\tA(Lara2)\t\tM\t\t\n.\t\tA(Lara)\t\tM\t\t\n.\t\t.\t\t.\t\t\nT(2)\t\tT(3)\t\t.\t\t\n'
+      );
+    });
+  });
+});
+
+describe('mapGrid TU', function () {
+  describe('#findTreasure()', function () {
+    it('The adventurer finds a treasure.', function () {
+      const dataParsed = {
+        A: [{ v: 'A - Lara - 0 - 2 - S - AADADAGGA' }],
+        C: [{ v: 'C - 3 - 4' }],
+        M: [{ v: 'M - 2 - 0' }, { v: 'M - 2 - 1' }],
+        T: [{ v: 'T - 0 - 3 - 2' }, { v: 'T - 1 - 3 - 3' }],
+      };
+      const grid = new Map(dataParsed);
+      grid.initMap();
+      grid.makeMoutain();
+      grid.makeTreasure();
+      grid.makeAdventurer();
+      const adventurer = new Adventurer(grid.adventurersData[0]);
+      const newCoordinates = adventurer.newCoordinates();
+      grid.moveAdventurerOnTheMap(adventurer, newCoordinates);
+      grid.findTreasure(adventurer);
+      console.log(grid.getGrid()[adventurer.y][adventurer.x][0]);
+      assert.equal(1, adventurer.countTreasure);
+      assert.equal(1, grid.getGrid()[adventurer.y][adventurer.x][0].count);
+      assert.equal(
+        grid.renderMap(),
+        '.\t\t.\t\tM\t\t\n.\t\t.\t\tM\t\t\n.\t\t.\t\t.\t\t\nA(Lara)\t\tT(3)\t\t.\t\t\n'
+      );
+    });
+  });
+});

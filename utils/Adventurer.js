@@ -7,6 +7,7 @@ const west = [-1, 0];
 class Adventurer {
   constructor(adventurerData) {
     const data = adventurerData.v.split(' - ');
+    this.id = adventurerData.id;
     this.typeItem = data[0];
     this.name = data[1];
     this.x = parseInt(data[2]);
@@ -38,6 +39,10 @@ class Adventurer {
           return [this.x, this.y];
       }
     }
+  };
+
+  getLetterOfSequence = (index) => {
+    return this.sequence[index] ?? null;
   };
 
   rotate = (deg) => {
