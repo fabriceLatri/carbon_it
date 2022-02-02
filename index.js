@@ -28,9 +28,8 @@ checkFile
     // 6. Mettre les avanturiers sur la carte
     mapClass.makeAdventurer();
     // 7. Créer les mouvements Avance, Gauche, Droite
-    mapClass.search();
 
-    console.log(mapClass.renderMap());
+    mapClass.search();
   })
   .catch((error) => {
     console.error(error);

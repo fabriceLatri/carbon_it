@@ -1,6 +1,7 @@
 const Mountain = require('./Moutain');
 const Treasure = require('./Treasure');
 const Adventurer = require('./Adventurer');
+const checkFile = require('./checkFile');
 
 class Map {
   constructor(parsedData) {
@@ -75,7 +76,7 @@ class Map {
             output += `T(${treasuresCount})\t`;
           }
         }
-        output += '\t';
+        // output += '\t';
       });
       output += '\n';
     });
@@ -120,7 +121,10 @@ class Map {
   };
 
   existsMapCoordinates = (item) => {
-    return item.y < this.grid.length && item.x < this.grid[0].length
+    return item.y < this.grid.length &&
+      item.y > -1 &&
+      item.x < this.grid[0].length &&
+      item.x > -1
       ? true
       : false;
   };
@@ -140,8 +144,8 @@ class Map {
     }, 0);
 
     for (let i = 0; i < maxSequence; i++) {
-      adventurers.forEach((adventurer) => {
-        if (i < adventurer.countSequence) {
+      adventurers.map((adventurer) => {
+        if (adventurer.countSequence > -1) {
           // Récupérer les nouvelles coordonnées  ou direction de l'aventurier
           const newCoordinates = adventurer.newCoordinates();
 
@@ -157,10 +161,44 @@ class Map {
           ) {
             // Save the new coordinates of the adventurer on the map
             this.moveAdventurerOnTheMap(adventurer, newCoordinates);
+
+            // Check if a treasure has been found
+            this.findTreasure(adventurer);
           }
+
+          adventurer.countSequence -= 1;
         }
       });
+
+      console.log(this.renderMap());
     }
+
+    // End of the hunt!! Show the result
+    checkFile.write(this.resultHunt());
+  };
+
+  resultHunt = () => {
+    const adventurers = this.getAdvendurersMap();
+    const treasures = this.getTreasuresMap();
+    const mountains = this.getMountainsMap();
+
+    let output = this.mapData[0].v + '\n';
+
+    const outputMountains = mountains.reduce((acc, current) => {
+      return acc + current.getMountainInfo();
+    }, '');
+
+    const outputTreasures = treasures.reduce((acc, current) => {
+      return acc + current.getTreasureInfo();
+    }, '# {T comme Trésor} - {Axe horizontal} - {Axe vertical} - {Nb. de trésors restants}\n');
+
+    const outputAdventurers = adventurers.reduce((acc, current) => {
+      return acc + current.getAdventurerInfo();
+    }, '# {A comme Aventurier} - {Nom de l’aventurier} - {Axe horizontal} - {Axe vertical} - {Orientation} - {Nb. trésors ramassés}\n');
+
+    output += outputMountains + outputTreasures + outputAdventurers;
+
+    return output;
   };
 
   moveAdventurerOnTheMap = (adventurer, newCoordinates) => {
@@ -217,6 +255,34 @@ class Map {
       });
     });
     return adventurers;
+  };
+
+  getTreasuresMap = () => {
+    const treasures = [];
+    this.grid.forEach((yAxis) => {
+      yAxis.forEach((xAxis) => {
+        xAxis.forEach((item) => {
+          if (item instanceof Treasure) {
+            treasures.push(item);
+          }
+        });
+      });
+    });
+    return treasures;
+  };
+
+  getMountainsMap = () => {
+    const mountains = [];
+    this.grid.forEach((yAxis) => {
+      yAxis.forEach((xAxis) => {
+        xAxis.forEach((item) => {
+          if (item instanceof Mountain) {
+            mountains.push(item);
+          }
+        });
+      });
+    });
+    return mountains;
   };
 }
 

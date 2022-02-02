@@ -1,7 +1,9 @@
 const { promises: Fs, constants } = require('fs');
+const util = require('util');
+
 const path = require('path');
 
-const DIR_FILE = 'entryFiles/';
+const DIR_FILE = 'entryFiles';
 
 /**
  * Check if the file exists in entryfiles folder
@@ -10,9 +12,10 @@ const DIR_FILE = 'entryFiles/';
  * @param {string} filename
  * @return {boolean}
  */
-const exists = async (filename) => {
+const exists = async (filename, pathName = null) => {
   try {
-    const absoluteFilePath = path.resolve(DIR_FILE + filename);
+    const fullPath = pathName ?? DIR_FILE;
+    const absoluteFilePath = path.resolve(fullPath + '/' + filename);
     await Fs.access(absoluteFilePath, constants.R_OK);
     return true;
   } catch {
@@ -20,9 +23,11 @@ const exists = async (filename) => {
   }
 };
 
-const read = async (filename) => {
+const read = async (filename, dirname = DIR_FILE) => {
   try {
-    const absoluteFilePath = path.resolve(DIR_FILE + filename);
+    const absoluteFilePath = path.resolve(
+      dirname + '/' + filename ?? DIR_FILE + filename
+    );
     const result = await Fs.readFile(absoluteFilePath, 'utf-8');
     return result;
   } catch (error) {
@@ -81,16 +86,27 @@ const parseData = (data) => {
     );
 };
 
-const dispatchData = (data) => {
-  data.reduce((acc, current) => {
-    switch (current[0]) {
-      case 'C':
-    }
-  }, []);
+const write = (message, filename = 'output.txt', pathFolder = 'dist') => {
+  const absPathFile = pathFolder + '/' + filename;
+  Fs.mkdir(path.dirname(absPathFile), {
+    recursive: true,
+  })
+    .then(() => {
+      // message = message.replaceAll('\t', '\t\t');
+      Fs.appendFile(absPathFile, message + '\n', 'UTF-8');
+    })
+    .then(() => {
+      return true;
+    })
+    .catch((error) => {
+      console.error(error);
+      return false;
+    });
 };
 
 module.exports = {
   exists,
   read,
   parseData,
+  write,
 };

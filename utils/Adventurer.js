@@ -19,11 +19,29 @@ class Adventurer {
     this.countTreasure = 0;
   }
 
+  getAdventurerInfo = () => {
+    return (
+      this.typeItem +
+      ' - ' +
+      this.name +
+      ' - ' +
+      this.x.toString() +
+      ' - ' +
+      this.y.toString() +
+      ' - ' +
+      this.direction +
+      ' - ' +
+      this.countTreasure.toString() +
+      '\n'
+    );
+  };
+
   newCoordinates = () => {
     if (this.countSequence > -1) {
       const action = this.sequence[this.sequence.length - this.countSequence];
       switch (action) {
         case 'A':
+          this.coordinatesOfDirection = this.getCoordinates(this.direction);
           const x = this.coordinatesOfDirection[0] + this.x;
           const y = this.coordinatesOfDirection[1] + this.y;
           return [x, y];

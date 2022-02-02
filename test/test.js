@@ -366,13 +366,26 @@ describe('mapGrid TU', function () {
       const newCoordinates = adventurer.newCoordinates();
       grid.moveAdventurerOnTheMap(adventurer, newCoordinates);
       grid.findTreasure(adventurer);
-      console.log(grid.getGrid()[adventurer.y][adventurer.x][0]);
       assert.equal(1, adventurer.countTreasure);
       assert.equal(1, grid.getGrid()[adventurer.y][adventurer.x][0].count);
       assert.equal(
         grid.renderMap(),
         '.\t\t.\t\tM\t\t\n.\t\t.\t\tM\t\t\n.\t\t.\t\t.\t\t\nA(Lara)\t\tT(3)\t\t.\t\t\n'
       );
+    });
+  });
+});
+
+describe('checkFile TU', function () {
+  describe('#output write()', function () {
+    it('Write the message in the specified file. Default: dist/output.txt ', function () {
+      const message = 'Hello World';
+      const message2 = 'Foo Bar';
+      checkFile.write(message);
+      checkFile.write(message2);
+      checkFile.read('output.txt', 'dist').then((content) => {
+        assert.equal(content, 'Hello World\nFoo Bar\n');
+      });
     });
   });
 });

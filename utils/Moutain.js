@@ -5,6 +5,17 @@ class Mountain {
     this.x = parseInt(data[1]);
     this.y = parseInt(data[2]);
   }
+
+  getMountainInfo = () => {
+    return (
+      this.typeItem +
+      ' - ' +
+      this.x.toString() +
+      ' - ' +
+      this.y.toString() +
+      '\n'
+    );
+  };
 }
 
 module.exports = Mountain;
