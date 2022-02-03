@@ -10,5 +10,5 @@ Getting started:
 
 - Download the repo
 - You can use the example.txt as template. The file must be localised in entryFiles folder.
-- Run "node index.js {filename}" (default filename is "example.js")
+- Run "node index.js" (or run "node index.js {filename}" (default filename is "example.txt"))
 - See the output File generated in the dist folder (output.txt).
