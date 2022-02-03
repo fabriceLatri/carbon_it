@@ -1,6 +1,4 @@
 const { promises: Fs, constants } = require('fs');
-const util = require('util');
-
 const path = require('path');
 
 const DIR_FILE = 'entryFiles';
@@ -10,6 +8,7 @@ const DIR_FILE = 'entryFiles';
  * @function exists
  * @async
  * @param {string} filename
+ * @param {string} pathname path of the parent folder. - Optional
  * @return {boolean}
  */
 const exists = async (filename, pathName = null) => {
@@ -23,6 +22,14 @@ const exists = async (filename, pathName = null) => {
   }
 };
 
+/**
+ * Read the file and return his content
+ * @function read
+ * @async
+ * @param {string} filename
+ * @param {string} dirname Directory parent. - Optional
+ * @return {string}
+ */
 const read = async (filename, dirname = DIR_FILE) => {
   try {
     const absoluteFilePath = path.resolve(
@@ -35,6 +42,12 @@ const read = async (filename, dirname = DIR_FILE) => {
   }
 };
 
+/**
+ * Parse the content of the file to object
+ * @function parseData
+ * @param {string} data Data to parse
+ * @return {object}
+ */
 const parseData = (data) => {
   let arrayFile = data.split('\n');
   let arrayFileTrim = arrayFile.map((element) => element.trim());
@@ -86,13 +99,20 @@ const parseData = (data) => {
     );
 };
 
-const write = (message, filename = 'output.txt', pathFolder = 'dist') => {
+/**
+ * Write on the specified file
+ * @function write
+ * @param {string} message Message to write.
+ * @param {string} filename File name. - Optional
+ * @param {string} dirname Directory parent. - Optional
+ * @return {bool}
+ */
+const write = (message, filename = 'output.env', pathFolder = 'dist') => {
   const absPathFile = pathFolder + '/' + filename;
   Fs.mkdir(path.dirname(absPathFile), {
     recursive: true,
   })
     .then(() => {
-      // message = message.replaceAll('\t', '\t\t');
       Fs.appendFile(absPathFile, message + '\n', 'UTF-8');
     })
     .then(() => {

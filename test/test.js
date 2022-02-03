@@ -4,6 +4,21 @@ const Treasure = require('../utils/Treasure');
 const checkFile = require('../utils/checkFile');
 const Map = require('../utils/MapGrid');
 
+const formatTextTest = (string) => {
+  return string.split(/\t\t/gm).reduce((acc, current) => {
+    if (current !== '\n') {
+      return (
+        acc +
+        (current.length < 8
+          ? current.padEnd(15)
+          : (current.substring(0, 5) + '...)').padEnd(15))
+      );
+    } else {
+      return acc + current;
+    }
+  }, '');
+};
+
 describe('checkFile TU', function () {
   describe('#exists()', function () {
     it('should return true when the file exists, false else', async function () {
@@ -71,7 +86,9 @@ describe('mapGrid TU', function () {
       grid.makeMoutain();
       assert.equal(
         grid.renderMap(),
-        '.\t\tM\t\t.\t\t\n.\t\t.\t\tM\t\t\n.\t\t.\t\t.\t\t\n.\t\t.\t\t.\t\t\n'
+        formatTextTest(
+          '.\t\tM\t\t.\t\t\n\t\t.\t\t.\t\tM\t\t\n\t\t.\t\t.\t\t.\t\t\n\t\t.\t\t.\t\t.\t\t\n'
+        )
       );
     });
   });
@@ -92,7 +109,9 @@ describe('mapGrid TU', function () {
       grid.makeTreasure();
       assert.equal(
         grid.renderMap(),
-        '.\t\tM\t\t.\t\t\n.\t\t.\t\tM\t\t\n.\t\t.\t\t.\t\t\nT(2)\t\tT(3)\t\t.\t\t\n'
+        formatTextTest(
+          '.\t\tM\t\t.\t\t\n\t\t.\t\t.\t\tM\t\t\n\t\t.\t\t.\t\t.\t\t\n\t\tT(2)\t\tT(3)\t\t.\t\t\n'
+        )
       );
     });
   });
@@ -113,7 +132,9 @@ describe('mapGrid TU', function () {
       grid.makeTreasure();
       assert.equal(
         grid.renderMap(),
-        '.\t\tM\t\t.\t\t\n.\t\t.\t\tM\t\t\n.\t\t.\t\t.\t\t\nT(5)\t\t.\t\t.\t\t\n'
+        formatTextTest(
+          '.\t\tM\t\t.\t\t\n\t\t.\t\t.\t\tM\t\t\n\t\t.\t\t.\t\t.\t\t\n\t\tT(5)\t\t.\t\t.\t\t\n'
+        )
       );
     });
   });
@@ -135,7 +156,9 @@ describe('mapGrid TU', function () {
       grid.makeAdventurer();
       assert.equal(
         grid.renderMap(),
-        '.\t\tM\t\t.\t\t\n.\t\tA(Lara)\t\tM\t\t\n.\t\t.\t\t.\t\t\nT(2)\t\tT(3)\t\t.\t\t\n'
+        formatTextTest(
+          '.\t\tM\t\t.\t\t\n\t\t.\t\tA(Lara)\t\tM\t\t\n\t\t.\t\t.\t\t.\t\t\n\t\tT(2)\t\tT(3)\t\t.\t\t\n'
+        )
       );
     });
   });
@@ -161,7 +184,9 @@ describe('mapGrid TU', function () {
       grid.makeAdventurer();
       assert.equal(
         grid.renderMap(),
-        '.\t\tM\t\t.\t\t\nA(Nathan)\t\tA(Lara)\t\tM\t\t\n.\t\t.\t\t.\t\t\nT(2)\t\tT(3)\t\t.\t\t\n'
+        formatTextTest(
+          '.\t\tM\t\t.\t\t\n\t\tA(Nathan)\t\tA(Lara)\t\tM\t\t\n\t\t.\t\t.\t\t.\t\t\n\t\tT(2)\t\tT(3)\t\t.\t\t\n'
+        )
       );
     });
   });
@@ -283,7 +308,9 @@ describe('mapGrid TU', function () {
       grid.moveAdventurerOnTheMap(adventurer, newCoordinates);
       assert.equal(
         grid.renderMap(),
-        '.\t\tM\t\t.\t\t\n.\t\t.\t\tM\t\t\n.\t\tA(Lara)\t\t.\t\t\nT(2)\t\tT(3)\t\t.\t\t\n'
+        formatTextTest(
+          '.\t\tM\t\t.\t\t\n\t\t.\t\t.\t\tM\t\t\n\t\t.\t\tA(Lara)\t\t.\t\t\n\t\tT(2)\t\tT(3)\t\t.\t\t\n'
+        )
       );
     });
   });
@@ -342,7 +369,9 @@ describe('mapGrid TU', function () {
       assert.equal(false, grid.isAvailable(newCoordinatesObj));
       assert.equal(
         grid.renderMap(),
-        '.\t\tA(Lara2)\t\tM\t\t\n.\t\tA(Lara)\t\tM\t\t\n.\t\t.\t\t.\t\t\nT(2)\t\tT(3)\t\t.\t\t\n'
+        formatTextTest(
+          '.\t\tA(Lara2)\t\tM\t\t\n\t\t.\t\tA(Lara)\t\tM\t\t\n\t\t.\t\t.\t\t.\t\t\n\t\tT(2)\t\tT(3)\t\t.\t\t\n'
+        )
       );
     });
   });
@@ -370,7 +399,9 @@ describe('mapGrid TU', function () {
       assert.equal(1, grid.getGrid()[adventurer.y][adventurer.x][0].count);
       assert.equal(
         grid.renderMap(),
-        '.\t\t.\t\tM\t\t\n.\t\t.\t\tM\t\t\n.\t\t.\t\t.\t\t\nA(Lara)\t\tT(3)\t\t.\t\t\n'
+        formatTextTest(
+          '.\t\t.\t\tM\t\t\n\t\t.\t\t.\t\tM\t\t\n\t\t.\t\t.\t\t.\t\t\n\t\tA(Lara)\t\tT(3)\t\t.\t\t\n'
+        )
       );
     });
   });
@@ -378,14 +409,14 @@ describe('mapGrid TU', function () {
 
 describe('checkFile TU', function () {
   describe('#output write()', function () {
-    it('Write the message in the specified file. Default: dist/output.txt ', function () {
-      const message = 'Hello World';
-      const message2 = 'Foo Bar';
-      checkFile.write(message);
-      checkFile.write(message2);
-      checkFile.read('output.txt', 'dist').then((content) => {
-        assert.equal(content, 'Hello World\nFoo Bar\n');
-      });
+    it('Write the message in the specified file. Default: dist/output.txt ', async function () {
+      const message = 'Hello World\nFoo Bar';
+      if (await checkFile.write(message, 'outputTest.env')) {
+        assert.equal(
+          checkFile.read('outputTest.env', 'dist'),
+          'Hello World\nFoo Bar\n'
+        );
+      }
     });
   });
 });

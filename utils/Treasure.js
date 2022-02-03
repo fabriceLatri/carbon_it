@@ -7,6 +7,12 @@ class Treasure {
     this.count = parseInt(data[3]);
   }
 
+  /**
+   * Renderer infos of the treasure
+   * @return {string}
+   *
+   * @memberof Treasure
+   */
   getTreasureInfo = () => {
     if (this.count === 0) {
       return '';

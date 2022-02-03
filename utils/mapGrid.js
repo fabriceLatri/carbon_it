@@ -14,6 +14,13 @@ class Map {
     this.grid = null;
   }
 
+  /**
+   * Grid Initialization
+   * @return {void}
+   *
+   *
+   * @memberof Map
+   */
   initMap = () => {
     if (this.mapData.length !== 1) {
       throw 'Invalid parameters Map';
@@ -46,14 +53,19 @@ class Map {
     this.grid = map;
   };
 
+  /**
+   * Renderer the map with mountains, treasures and adventurers positions
+   * @return {string}
+   *
+   * @memberof Map
+   */
   renderMap = () => {
-    // Reset outputGrid
     let output = '';
     this.grid.forEach((yAxis) => {
       yAxis.forEach((xAxis) => {
         if (xAxis.length === 0) {
           // nothing elements inside. It's a classic map
-          output += '.\t';
+          output += '.'.padEnd(15);
         } else {
           const mountainsCount = xAxis.filter((item) => {
             return item instanceof Mountain;
@@ -66,17 +78,20 @@ class Map {
           });
 
           if (mountainsCount > 0) {
-            output += `M\t`;
+            output += 'M'.padEnd(15);
           } else if (adventurersArr.length === 1) {
-            output += `A(${adventurersArr[0].name})\t`;
+            output += `A(${
+              adventurersArr[0].name.length < 5
+                ? adventurersArr[0].name
+                : adventurersArr[0].name.substring(0, 3) + '...'
+            })`.padEnd(15);
           } else if (treasuresArr.length > 0) {
             const treasuresCount = treasuresArr.reduce((acc, current) => {
               return acc + current.count;
             }, 0);
-            output += `T(${treasuresCount})\t`;
+            output += `T(${treasuresCount})`.padEnd(15);
           }
         }
-        // output += '\t';
       });
       output += '\n';
     });
@@ -84,6 +99,12 @@ class Map {
     return output;
   };
 
+  /**
+   * Insert a mountain in the map
+   * @return {void}
+   *
+   * @memberof Map
+   */
   makeMoutain = () => {
     this.mountainsData.forEach((mountainData) => {
       const mountain = new Mountain(mountainData);
@@ -91,6 +112,12 @@ class Map {
     });
   };
 
+  /**
+   * Insert a treasure in the map
+   * @return {void}
+   *
+   * @memberof Map
+   */
   makeTreasure = () => {
     this.treasuresData.forEach((treasureData) => {
       const treasure = new Treasure(treasureData);
@@ -98,6 +125,12 @@ class Map {
     });
   };
 
+  /**
+   * Insert an adventurer in the map
+   * @return {void}
+   *
+   * @memberof Map
+   */
   makeAdventurer = () => {
     this.adventurersData.forEach((adventurerData, index) => {
       adventurerData.id = index;
@@ -106,6 +139,13 @@ class Map {
     });
   };
 
+  /**
+   * Insert item (mountain, treasure, adventurer) in the map
+   * @param {Mountain|Treasure|Adventurer} item instance of Mountain or Treasure or Adventurer
+   * @return {void}
+   *
+   * @memberof Map
+   */
   insertItem = (item) => {
     if (this.existsMapCoordinates(item) && this.isAvailable(item)) {
       // Check if a treasure with the same coordinates exists
@@ -120,6 +160,13 @@ class Map {
     }
   };
 
+  /**
+   * Check if the coordinates exists on the map
+   * @param {number[]} item Coordinates to check
+   * @return {boolean}
+   *
+   * @memberof Map
+   */
   existsMapCoordinates = (item) => {
     return item.y < this.grid.length &&
       item.y > -1 &&
@@ -129,6 +176,13 @@ class Map {
       : false;
   };
 
+  /**
+   * Check if the coordinates is not occuped by a mountain or an other adventurer
+   * @param {Adventurer} item an adventurer
+   * @return {boolean}
+   *
+   * @memberof Map
+   */
   isAvailable = (item) => {
     return this.grid[item.y][item.x].filter(
       (element) => element instanceof Mountain || element instanceof Adventurer
@@ -137,6 +191,12 @@ class Map {
       : false;
   };
 
+  /**
+   * Sequence for all adventurers: move - search treasure. At the end, write the result on the file example.env on the dist folder.
+   * @return {void}
+   *
+   * @memberof Map
+   */
   search = () => {
     const adventurers = this.getAdvendurersMap();
     const maxSequence = adventurers.reduce((acc, current) => {
@@ -170,13 +230,20 @@ class Map {
         }
       });
 
-      console.log(this.renderMap());
+      // console.log(this.renderMap());
     }
 
     // End of the hunt!! Show the result
     checkFile.write(this.resultHunt());
+    checkFile.write(this.renderMap());
   };
 
+  /**
+   * Give the treasure hunt results
+   * @return {string}
+   *
+   * @memberof Map
+   */
   resultHunt = () => {
     const adventurers = this.getAdvendurersMap();
     const treasures = this.getTreasuresMap();
@@ -201,6 +268,14 @@ class Map {
     return output;
   };
 
+  /**
+   * Move adventurers on the map
+   * @param {Adventurer} adventurer Adventurer to move
+   * @param {number[]} newCoordinates new coordinates of the adventurer
+   * @return {void}
+   *
+   * @memberof Map
+   */
   moveAdventurerOnTheMap = (adventurer, newCoordinates) => {
     let newGrid = this.grid.map((yAxis) =>
       yAxis.map((xAxis) =>
@@ -217,6 +292,13 @@ class Map {
     this.grid = newGrid;
   };
 
+  /**
+   * Search for treasure on map location
+   * @param {Adventurer} adventurer Adventurer to move
+   * @return {void}
+   *
+   * @memberof Map
+   */
   findTreasure = (adventurer) => {
     const itemsTreasure = this.grid[adventurer.y][adventurer.x].filter(
       (item) => item instanceof Treasure
@@ -231,18 +313,39 @@ class Map {
     }
   };
 
+  /**
+   * @return {string}
+   *
+   * @memberof Map
+   */
   getOutputGrid = () => {
     return this.outputGrid;
   };
 
+  /**
+   * @return {array}
+   *
+   * @memberof Map
+   */
   getMapData = () => {
     return this.mapData;
   };
 
+  /**
+   * @return {array}
+   *
+   * @memberof Map
+   */
   getGrid = () => {
     return this.grid;
   };
 
+  /**
+   * Get all adventurers on the map
+   * @return {Adventurer[]}
+   *
+   * @memberof Map
+   */
   getAdvendurersMap = () => {
     const adventurers = [];
     this.grid.forEach((yAxis) => {
@@ -257,6 +360,12 @@ class Map {
     return adventurers;
   };
 
+  /**
+   * Get all treasures on the map
+   * @return {Treasure[]}
+   *
+   * @memberof Map
+   */
   getTreasuresMap = () => {
     const treasures = [];
     this.grid.forEach((yAxis) => {
@@ -271,6 +380,12 @@ class Map {
     return treasures;
   };
 
+  /**
+   * Get all mountains on the map
+   * @return {Mountain[]}
+   *
+   * @memberof Map
+   */
   getMountainsMap = () => {
     const mountains = [];
     this.grid.forEach((yAxis) => {

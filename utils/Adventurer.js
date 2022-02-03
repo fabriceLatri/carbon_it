@@ -19,6 +19,12 @@ class Adventurer {
     this.countTreasure = 0;
   }
 
+  /**
+   * Renderer infos of the adventurer
+   * @return {string}
+   *
+   * @memberof Adventurer
+   */
   getAdventurerInfo = () => {
     return (
       this.typeItem +
@@ -36,6 +42,12 @@ class Adventurer {
     );
   };
 
+  /**
+   * Calculates the adventurer's new coordinates
+   * @return {number[]}
+   *
+   * @memberof Adventurer
+   */
   newCoordinates = () => {
     if (this.countSequence > -1) {
       const action = this.sequence[this.sequence.length - this.countSequence];
@@ -59,10 +71,24 @@ class Adventurer {
     }
   };
 
+  /**
+   * Return the letter of the sequence
+   * @param {number} index Index of the sequence.
+   * @return {string}
+   *
+   * @memberof Adventurer
+   */
   getLetterOfSequence = (index) => {
     return this.sequence[index] ?? null;
   };
 
+  /**
+   * Determines the adventurer's new direction
+   * @param {number} deg Degree of the direction. -90 or 90
+   * @return {string}
+   *
+   * @memberof Adventurer
+   */
   rotate = (deg) => {
     switch (this.direction) {
       case 'N':
@@ -82,6 +108,13 @@ class Adventurer {
     }
   };
 
+  /**
+   * Determines the adventurer's coordinates to apply
+   * @param {string} direction Adventurer's direction
+   * @return {function}
+   *
+   * @memberof Adventurer
+   */
   getCoordinates = (direction) => {
     switch (direction) {
       case 'S':
@@ -101,18 +134,42 @@ class Adventurer {
     }
   };
 
+  /**
+   * getter for south's constant
+   * @return {number[]}
+   *
+   * @memberof Adventurer
+   */
   getSouth = () => {
     return south;
   };
 
+  /**
+   * getter for north's constant
+   * @return {number[]}
+   *
+   * @memberof Adventurer
+   */
   getNorth = () => {
     return north;
   };
 
+  /**
+   * getter for west's constant
+   * @return {number[]}
+   *
+   * @memberof Adventurer
+   */
   getWest = () => {
     return west;
   };
 
+  /**
+   * getter for east's constant
+   * @return {number[]}
+   *
+   * @memberof Adventurer
+   */
   getEast = () => {
     return east;
   };

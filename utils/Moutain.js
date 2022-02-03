@@ -6,6 +6,12 @@ class Mountain {
     this.y = parseInt(data[2]);
   }
 
+  /**
+   * Renderer infos of the mountain
+   * @return {string}
+   *
+   * @memberof Mountain
+   */
   getMountainInfo = () => {
     return (
       this.typeItem +

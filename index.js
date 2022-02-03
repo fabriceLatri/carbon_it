@@ -27,15 +27,12 @@ checkFile
     mapClass.makeTreasure();
     // 6. Mettre les avanturiers sur la carte
     mapClass.makeAdventurer();
-    // 7. Créer les mouvements Avance, Gauche, Droite
+    // 7. Rechercher les trésors et affichage des résultats.
 
+    // 9. Indiquer les réponses dans le fichier de sortie output.env
     mapClass.search();
   })
   .catch((error) => {
     console.error(error);
     process.exitCode = 1;
   });
-
-// 8. Récupérer les trésors (counter)
-
-// 9. Indiquer les réponses dans le fichier de sortie output.txt
