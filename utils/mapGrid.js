@@ -230,7 +230,10 @@ class Map {
         }
       });
 
-      // console.log(this.renderMap());
+      console.log('\x1b[37m', 'Sequence number ' + i + ':');
+      console.log('\x1b[36m', '\n');
+      console.log(this.renderMap());
+      console.log('\n');
     }
 
     // End of the hunt!! Show the result

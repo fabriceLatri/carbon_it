@@ -40,6 +40,6 @@ checkFile
     );
   })
   .catch((error) => {
-    console.error(error);
+    console.error('\x1b[31m', error);
     process.exitCode = 1;
   });
