@@ -21,14 +21,23 @@ checkFile
     // 3. Build the map
     const mapClass = new Map(parsedData);
     mapClass.initMap();
+    console.log('\x1b[32m', ' -  Map is created\n\n');
     // 4. Put the mountains in the map
     mapClass.makeMoutain();
+    console.log('\x1b[32m', ' -  Mountains are implemented on the map\n\n');
     // 5. Put the treasures in the map
     mapClass.makeTreasure();
+    console.log('\x1b[32m', ' - Treasures are well hidden hahaha\n\n');
     // 6. Put the adventurers on the map
     mapClass.makeAdventurer();
+    console.log('\x1b[32m', " - Adventurers are ready!! Let's go!!\n\n");
     // 7 & 8. Search for treasures and display of results.
     mapClass.search();
+
+    console.log(
+      '\x1b[32m',
+      ' - Everything is OK. Go to the dist folder and check the file ouput.env. Thank you!!\n\n'
+    );
   })
   .catch((error) => {
     console.error(error);
