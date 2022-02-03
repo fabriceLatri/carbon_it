@@ -4,7 +4,7 @@ const Map = require('./utils/MapGrid');
 // Check arguments of the program
 const myArgs = process.argv.slice(2);
 
-// 1. Vérifier si le fichier est passé en argument et existe dans le dossier entryFiles
+// 1. Check if the file is passed as an argument and exists in the entryFiles folder
 const filename = myArgs[0] ?? 'example.txt';
 checkFile
   .exists(filename)
@@ -14,22 +14,20 @@ checkFile
     return checkFile.read(filename);
   })
   .then((data) => {
-    // 2. Lire le fichier et mettre les instructions non commentées dans un objet
+    // 2. Read the file and put the uncommented statements into an object
     return checkFile.parseData(data);
   })
   .then((parsedData) => {
-    // 3. Construire la map
+    // 3. Build the map
     const mapClass = new Map(parsedData);
     mapClass.initMap();
-    // 4. Mettre les montagnes dans la carte
+    // 4. Put the mountains in the map
     mapClass.makeMoutain();
-    // 5. Mettre les trésors dans la carte
+    // 5. Put the treasures in the map
     mapClass.makeTreasure();
-    // 6. Mettre les avanturiers sur la carte
+    // 6. Put the adventurers on the map
     mapClass.makeAdventurer();
-    // 7. Rechercher les trésors et affichage des résultats.
-
-    // 9. Indiquer les réponses dans le fichier de sortie output.env
+    // 7 & 8. Search for treasures and display of results.
     mapClass.search();
   })
   .catch((error) => {
